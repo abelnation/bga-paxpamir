@@ -89,8 +89,19 @@ class paxpamir extends Table
 
         /************ Start the game initialization *****/
 
-        $this->tokens->createTokensPack("card_{INDEX}", "deck", 116);
-        $this->tokens->shuffle("deck");
+        //
+        // Create the initial deck, as per the game instructions.
+        //
+        $num_players = count($players);
+        // TODO: if wakhan enabled, add 1 to the player count when creating the deck
+        $deck = getInitialDeck($num_players);
+        $tokens = array();
+        foreach($deck as $deck_pos => $card_num) {
+            #
+            $tokens[] = array("key" => "card_".$card_num, /* "state" => $deck_pos */);
+        }
+        // Order of resulting tokens (stored in `state`) should match $deck
+        $this->tokens->createTokens($tokens, "deck");
 
         // Init global values with their initial values
         self::setGameStateInitialValue( 'remaining_actions', 2 );
